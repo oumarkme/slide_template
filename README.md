@@ -2,15 +2,17 @@
 
 A 16:9 slide template for academic talks, in two matching formats: one LaTeX file (Beamer, XeLaTeX) and one HTML file (reveal.js).
 
-Status: stable. Version: 1.0. License: not chosen yet; add a `LICENSE` file before you publish.
+Version 1.0. MIT license.
 
 Both formats share one design: white pages, Noto fonts for English and Traditional Chinese, the Okabe-Ito color palette, and the same geometry, so a PDF and an HTML talk look alike. The demo deck shows lists, blocks, a figure with a credit line, a table, equations, code, and a palette slide. The Beamer theme is written from scratch; its page layout follows Metropolis.
 
 ## Install
 
-You need TeX Live with XeLaTeX, Beamer, xeCJK, unicode-math, listings, and `latexmk` for the PDF. The HTML deck needs only a browser and a network connection. Download the Noto fonts for LaTeX once (about 36 MB, needs `curl`):
+You need TeX Live with XeLaTeX, Beamer, xeCJK, unicode-math, listings, and `latexmk` for the PDF. The HTML deck needs only a browser and a network connection. Clone the repository and download the Noto fonts for LaTeX once (about 36 MB, needs `curl`):
 
 ```bash
+git clone https://github.com/oumarkme/slide_template.git
+cd slide_template
 bash fonts/download.sh
 ```
 
@@ -20,7 +22,7 @@ bash fonts/download.sh
 cd latex && latexmk template.tex     # writes template.pdf, 13 pages
 ```
 
-Then double-click `html/index.html`. The browser tab shows `Jen-Hsiang Ou, Ph.D.`, and slide 1 is the title page. The PDF and the HTML deck contain the same 13 slides.
+Then open `html/index.html` in a browser. The PDF and the HTML deck contain the same 13 slides, and the browser tab shows the author name from the title page.
 
 ## Contents
 
@@ -43,8 +45,8 @@ Then double-click `html/index.html`. The browser tab shows `Jen-Hsiang Ou, Ph.D.
    ```latex
    % ======== Part 2: your talk ========
    \title{Talk title}
-   \author{Jen-Hsiang Ou, Ph.D.}
-   % \footertext{Ou \textbullet{} Talk title}   % optional left footer; empty by default
+   \author{Your Name}
+   % \footertext{Your Name \textbullet{} Talk title}   % optional left footer; empty by default
    ```
 
 3. Build with `cd latex && latexmk my-talk.tex`. Without latexmk, run `OPENTYPEFONTS=../fonts//: TTFONTS=../fonts//: xelatex my-talk.tex` twice; the trailing colons keep the default search paths.
@@ -71,7 +73,7 @@ For colors, use `oiBlue`, `oiVermillion`, `oiGreen`, and the grays `oiInk`, `oiM
 3. Edit the slides between the `<div class="slides">` tags. Each slide is one `<section>`. Start from the demo slide closest to what you need and delete the others. Leave the `<style>` and `<script>` blocks alone unless you want to change the design.
 4. Open the file in a browser. No server or build step is needed.
 
-The left footer is empty by default. To add text, set it on the container: `<div class="slides" data-footer="Ou • Talk title">`.
+The left footer is empty by default. To add text, set it on the container: `<div class="slides" data-footer="Your Name • Talk title">`.
 
 | Need | Write |
 |---|---|
@@ -126,4 +128,4 @@ Limits: line breaks can differ by a word when a line is almost full, and code to
 
 The page layout follows the Metropolis Beamer theme by Matthias Vogelgesang and contributors (CC BY-SA 4.0). The theme code here is an independent implementation. The color palette is from Okabe and Ito (2008), *Color Universal Design*, https://jfly.uni-koeln.de/color/. reveal.js and KaTeX are MIT licensed.
 
-Maintainer: Jen-Hsiang Ou, Ph.D., Department of Medical Genetics, National Taiwan University Hospital.
+Author: Jen-Hsiang Ou, Ph.D. Released under the MIT license (`LICENSE`); the Noto fonts keep their own license (`fonts/OFL.txt`).

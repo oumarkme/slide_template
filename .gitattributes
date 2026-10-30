@@ -1,2 +1,6 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Text files are checked out with CRLF; the repository stores LF.
+* text=auto eol=crlf
+
+# Scripts run by bash or Perl must keep LF on every platform.
+*.sh text eol=lf
+latex/latexmkrc text eol=lf
