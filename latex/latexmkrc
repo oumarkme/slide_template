@@ -1,0 +1,5 @@
+# Finds the Noto fonts in ../fonts without installing them.
+ensure_path('OPENTYPEFONTS', '../fonts//');
+ensure_path('TTFONTS', '../fonts//');
+$pdf_mode = 5;  # xelatex
+$xelatex = 'xelatex %O -interaction=nonstopmode -halt-on-error %S';

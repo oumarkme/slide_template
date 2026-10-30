@@ -1,0 +1,16 @@
+# LaTeX build files (the .pdf outputs are kept)
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb
+*.synctex.gz
+.DS_Store
+*.xdv
+# Noto fonts: fetch them with fonts/download.sh
+fonts/*.ttf
+fonts/*.otf

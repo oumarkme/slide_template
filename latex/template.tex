@@ -1,0 +1,379 @@
+% mark-academic-slide: 16:9 Beamer slides on a white page with the Okabe-Ito
+% palette. Build with XeLaTeX (latexmk template.tex); the Noto fonts come from
+% ../fonts (run fonts/download.sh once).
+% Part 1 is the theme: copy it unchanged into a new talk.
+% Part 2 holds the title block and the slides: edit it.
+% The page layout follows the Metropolis theme by M. Vogelgesang et al.
+% (CC BY-SA 4.0); this code is an independent implementation.
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+% ======== Part 1: theme ========
+\makeatletter
+% ---- Packages ----
+\usepackage{calc, etoolbox, fontspec, xeCJK}
+\usepackage{amsmath}
+\usepackage[math-style=ISO, bold-style=ISO]{unicode-math}
+\usepackage{booktabs, listings, tikz}
+
+% ---- Fonts: Noto Sans, Noto Sans Mono, Noto Sans CJK TC, Latin Modern Math ----
+% Files are found by name through kpathsea; latexmkrc adds fonts/ to the search path.
+\newcommand{\oi@latin}{BoldFont=NotoSans-Bold.ttf, ItalicFont=NotoSans-Italic.ttf,
+  BoldItalicFont=NotoSans-BoldItalic.ttf}
+\newcommand{\oi@cjk}{BoldFont=NotoSansCJKtc-Bold.otf, ItalicFont=NotoSansCJKtc-Regular.otf}
+\setsansfont{NotoSans-Regular.ttf}[\oi@latin]
+\setmainfont{NotoSans-Regular.ttf}[\oi@latin]
+\setmonofont{NotoSansMono-Regular.ttf}[BoldFont=NotoSansMono-Bold.ttf]
+\setmathfont{latinmodern-math.otf}
+\setCJKmainfont{NotoSansCJKtc-Regular.otf}[\oi@cjk]
+\setCJKsansfont{NotoSansCJKtc-Regular.otf}[\oi@cjk]
+\setCJKmonofont{NotoSansCJKtc-Regular.otf}
+\xeCJKsetup{CJKmath=true}
+\renewcommand{\familydefault}{\sfdefault}
+% amsmath's \boldsymbol does not work with unicode-math.
+\renewcommand{\boldsymbol}[1]{\symbfit{#1}}
+\AtBeginEnvironment{tabular}{\addfontfeature{Numbers={Monospaced}}}
+% booktabs sets its rule spacing in ex when it loads; measure it in the text font instead.
+\AtBeginDocument{%
+  \setlength{\aboverulesep}{0.4ex}%
+  \setlength{\belowrulesep}{0.65ex}}
+
+% ---- Palette (Okabe & Ito, 2008) and grays ----
+\definecolor{oiOrange}{HTML}{E69F00}
+\definecolor{oiSky}{HTML}{56B4E9}
+\definecolor{oiGreen}{HTML}{009E73}
+\definecolor{oiYellow}{HTML}{F0E442}
+\definecolor{oiBlue}{HTML}{0072B2}
+\definecolor{oiVermillion}{HTML}{D55E00}
+\definecolor{oiPurple}{HTML}{CC79A7}
+\definecolor{oiBlack}{HTML}{000000}
+\definecolor{oiInk}{HTML}{1F2328}
+\definecolor{oiPaper}{HTML}{FFFFFF}
+\definecolor{oiMuted}{HTML}{4D5258}
+\definecolor{oiRule}{HTML}{D9D9D9}
+\definecolor{oiCode}{HTML}{F2F2F2}
+\definecolor{oiTitle}{HTML}{E8E8E8}
+\definecolor{oiBody}{HTML}{F5F5F5}
+
+\setbeamercolor{normal text}{fg=oiInk, bg=oiPaper}
+\setbeamercolor{alerted text}{fg=oiVermillion}
+\setbeamercolor{example text}{fg=oiGreen}
+\setbeamercolor{structure}{fg=oiInk}
+\setbeamercolor{frametitle}{fg=oiInk, bg=oiPaper}
+\setbeamercolor{titlelike}{fg=oiInk}
+\setbeamercolor{section title}{fg=oiInk}
+\setbeamercolor{footline}{fg=oiMuted}
+\setbeamercolor{footnote}{fg=oiInk}
+\setbeamercolor{block body}{bg=oiBody}
+\setbeamercolor{code box}{bg=oiCode}
+\@for\oi@name:=block title,block title alerted,block title example\do{%
+  \setbeamercolor{\oi@name}{fg=oiInk, bg=oiTitle}}
+\hypersetup{colorlinks=true, urlcolor=oiBlue, linkcolor=oiInk, citecolor=oiInk}
+
+% ---- Type scale, spacing, and page ----
+\setbeamertemplate{navigation symbols}{}
+\setbeamersize{text margin left=7mm, text margin right=7mm}
+\setbeamertemplate{itemize items}{\textbullet}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\linespread{1.15}
+\setlength{\parskip}{0.5em}
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\urlstyle{sf}
+\setbeamerfont{title}{size=\Large, series=\bfseries}
+\setbeamerfont*{subtitle}{size=\large}
+\setbeamerfont{author}{size=\small}
+\setbeamerfont{date}{size=\small}
+\setbeamerfont{section title}{size=\Large, series=\bfseries}
+\setbeamerfont{frametitle}{size=\large, series=\bfseries}
+\setbeamerfont{standout}{size=\Large, series=\bfseries}
+\setbeamerfont{caption}{size=\small}
+\setbeamerfont{caption name}{series=\bfseries}
+\setbeamerfont{description item}{series=\bfseries}
+\setbeamerfont{page number in head/foot}{size=\scriptsize}
+\@for\oi@name:=block title,block title alerted,block title example\do{%
+  \setbeamerfont{\oi@name}{size=\normalsize, series=\bfseries}}
+
+% ---- Progress line: blue up to the current frame, gray track after it ----
+% #1: line width.
+\newlength{\oi@line}
+\setlength{\oi@line}{1.2pt}
+\newlength{\oi@filled}
+\newcommand{\oi@progress}[1]{%
+  \setlength{\oi@filled}{#1 * \ratio{\insertframenumber pt}{\inserttotalframenumber pt}}%
+  \begin{tikzpicture}
+    \fill[oiRule] (0, 0) rectangle (#1, \oi@line);
+    \fill[oiBlue] (0, 0) rectangle (\oi@filled, \oi@line);
+  \end{tikzpicture}}
+
+% ---- Frame title with the progress line under it ----
+\newlength{\oi@pad}
+\setlength{\oi@pad}{9.75pt}
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip
+  \begin{beamercolorbox}[wd=\paperwidth, sep=0pt, leftskip=\oi@pad, rightskip=\oi@pad]{frametitle}%
+    \rule{0pt}{\oi@pad + \totalheightof{X}}%
+    \insertframetitle\nolinebreak
+    \rule[-\oi@pad]{0pt}{\oi@pad}%
+  \end{beamercolorbox}%
+  \nointerlineskip
+  \begin{beamercolorbox}[wd=\paperwidth]{normal text}\oi@progress{\paperwidth}\end{beamercolorbox}}
+
+% ---- Footer: optional left text (\footertext) and "n/N" on the right ----
+\newcommand{\footertext}[1]{\def\oi@footertext{#1}}
+\footertext{}
+\setbeamertemplate{footline}{%
+  \begin{beamercolorbox}[wd=\textwidth, sep=3ex]{footline}%
+    \usebeamerfont{page number in head/foot}%
+    \oi@footertext\vphantom{gjpqy/}\hfill\insertframenumber/\inserttotalframenumber
+  \end{beamercolorbox}}
+
+% ---- Title page ----
+\setbeamertemplate{title page}{%
+  \begin{minipage}[b][\paperheight]{\textwidth}
+    \vfill
+    \raggedright
+    {\usebeamerfont{title}\usebeamercolor[fg]{titlelike}\linespread{1.0}%
+      \inserttitle\par\vspace*{0.5em}}
+    \ifx\insertsubtitle\@empty\else
+      {\usebeamerfont{subtitle}\insertsubtitle\par\vspace*{0.5em}}
+    \fi
+    \begin{tikzpicture}\fill[oiBlue] (0, 0) rectangle (\textwidth, \oi@line);\end{tikzpicture}\par
+    {\usebeamerfont{author}\vspace*{2em}\insertauthor\par\vspace*{0.25em}}
+    {\usebeamerfont{date}\insertdate\par}
+    {\usebeamerfont{institute}\vspace*{3mm}\insertinstitute\par}
+    \vfill
+    \vspace*{1mm}
+  \end{minipage}}
+\renewcommand{\maketitle}{\frame[plain, noframenumbering]{\usebeamertemplate{title page}}}
+
+% ---- Section page: one per \section, with a progress line ----
+\setbeamertemplate{section page}{%
+  \centering
+  \begin{minipage}{22em}
+    \raggedright
+    \usebeamercolor[fg]{section title}\usebeamerfont{section title}
+    \insertsectionhead\\[-1ex]
+    \oi@progress{\linewidth}\par
+  \end{minipage}\par
+  \vspace{\baselineskip}}
+\AtBeginSection{\frame[plain, c, noframenumbering]{\sectionpage}}
+
+% ---- Frames are centered vertically with equal space above and below ----
+\define@key{beamerframe}{c}[true]{%
+  \beamer@frametopskip=0pt plus 1fill\relax
+  \beamer@framebottomskip=0pt plus 1fill\relax
+  \beamer@frametopskipautobreak=0pt plus .4\paperheight\relax
+  \beamer@framebottomskipautobreak=0pt plus .6\paperheight\relax
+  \def\beamer@initfirstlineunskip{}}
+
+% ---- Standout frame: large centered text, no footer, no frame number ----
+\newif\ifoi@standout
+\define@key{beamerframe}{standout}[true]{%
+  \begingroup
+  \oi@standouttrue
+  \setkeys{beamerframe}{c, noframenumbering}%
+  \setbeamertemplate{footline}{}%
+  \centering
+  \usebeamerfont{standout}}
+\apptocmd{\beamer@reseteecodes}{\ifoi@standout\endgroup\fi}{}{}
+
+% ---- Blocks: gray title and body under a 1.2 pt rule (blue, vermillion, green) ----
+\newlength{\oi@blocksep}
+\newlength{\oi@blockadjust}
+\setlength{\oi@blocksep}{3.2292pt}
+\setlength{\oi@blockadjust}{1.0764pt}
+\newcommand{\oi@strut}{\vphantom{ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz()}}
+% #1: block kind (empty, " alerted", or " example"); #2: rule color.
+\newcommand{\oi@block}[2]{%
+  \par\vskip\medskipamount
+  \setlength{\parskip}{0pt}
+  \noindent{\color{#2}\rule{\linewidth}{\oi@line}}\par\nointerlineskip
+  \begin{beamercolorbox}[sep=\dimexpr\oi@blocksep-\oi@blockadjust\relax,
+      leftskip=\oi@blockadjust,
+      rightskip=\dimexpr\oi@blockadjust plus 4em\relax]{block title#1}%
+    \usebeamerfont*{block title#1}\oi@strut\insertblocktitle\oi@strut
+  \end{beamercolorbox}%
+  \nointerlineskip
+  \begin{beamercolorbox}[sep=\oi@blocksep, vmode]{block body#1}%
+    \vspace{-0.5em}%
+    \usebeamerfont{block body#1}%
+    \setlength{\parskip}{0.5em}}
+\setbeamertemplate{block begin}{\oi@block{}{oiBlue}}
+\setbeamertemplate{block alerted begin}{\oi@block{ alerted}{oiVermillion}}
+\setbeamertemplate{block example begin}{\oi@block{ example}{oiGreen}}
+\setbeamertemplate{block end}{\end{beamercolorbox}\vspace*{0.2ex}}
+\setbeamertemplate{block alerted end}{\end{beamercolorbox}\vspace*{0.2ex}}
+\setbeamertemplate{block example end}{\end{beamercolorbox}\vspace*{0.2ex}}
+
+% ---- Footnotes ----
+\setbeamertemplate{footnote}{%
+  \parindent=0pt\noindent\raggedright
+  \usebeamercolor{footnote}\hbox to 0.8em{\hfil\insertfootnotemark}\insertfootnotetext\par}
+
+
+% ---- Code: one gray box per listing, token colors as in the CSS ----
+\lstdefinestyle{oi}{
+  basicstyle=\ttfamily\footnotesize\color{oiBlack},
+  keywordstyle=\bfseries\color{oiBlue},
+  stringstyle=\color{oiVermillion},
+  commentstyle=\itshape\color{oiMuted},
+  numberstyle=\color{oiMuted},
+  frame=none, xleftmargin=2.5mm, xrightmargin=2.5mm,
+  aboveskip=2mm, belowskip=0mm,
+  showstringspaces=false, columns=fixed, keepspaces=true,
+  breaklines=true, upquote=true, tabsize=4,
+}
+\lstset{style=oi}
+\lstdefinelanguage{bash}{
+  morekeywords={if,then,else,elif,fi,for,in,do,done,while,case,esac,function,export},
+  morecomment=[l]{\#}, morestring=[b]", morestring=[b]', sensitive=true,
+}
+\newenvironment{codebox}{%
+  \par\vskip 1mm\begin{beamercolorbox}[sep=0pt]{code box}}{\end{beamercolorbox}}
+
+% ---- Small helpers ----
+% Figure credit or note in small gray text.
+\newcommand{\credit}[1]{{\scriptsize\color{oiMuted}#1}}
+% Palette swatch for tikzpicture: \oiswatch{color}{name}{hex}{column}{row}.
+\newcommand{\oiswatch}[5]{%
+  \fill[#1] ({#4*3.55}, {-#5*2.9}) rectangle ++(3.3, -1.4);
+  \node[anchor=north west, font=\small, text=oiInk, align=left, inner sep=0pt]
+    at ({#4*3.55}, {-#5*2.9-1.45}) {#2\\[-0.4ex]{\footnotesize\ttfamily\##3}};}
+\makeatother
+
+% ======== Part 2: your talk ========
+\title{mark-academic-slide}
+\subtitle{One template for XeLaTeX and reveal.js}
+\author{Jen-Hsiang Ou, Ph.D.}
+\institute{Department of Medical Genetics, National Taiwan University Hospital}
+\date{2026-10-29}
+% \footertext{Ou \textbullet{} Slide template}   % optional left footer; empty by default
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+\section{Text and blocks}
+
+\begin{frame}{Lists and emphasis}
+  \begin{itemize}
+    \item Plain text is Noto Sans, with \alert{vermillion} for alerts and \emph{italics} for terms
+    \item 繁體中文可直接輸入，technical terms 保留 English
+    \item Nested lists
+      \begin{itemize}
+        \item Second level keeps the same line spacing
+        \item Third level is rarely needed
+      \end{itemize}
+    \item Numbered steps
+      \begin{enumerate}
+        \item Align reads to the reference
+        \item Call variants and normalize them
+        \item Annotate and filter
+      \end{enumerate}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Blocks}
+  \begin{block}{Definition}
+    The Phred score $Q$ of a base call is $Q = -10\log_{10} P_{\mathrm{error}}$.
+  \end{block}
+  \begin{alertblock}{Warning}
+    Check the genome build before you merge coordinates from two tables.
+  \end{alertblock}
+  \begin{exampleblock}{Example}
+    $Q = 30$ corresponds to one expected error in 1,000 base calls.
+  \end{exampleblock}
+\end{frame}
+
+\section{Figures and tables}
+
+\begin{frame}{Figure with text}
+  \begin{columns}[T, onlytextwidth]
+    \begin{column}{0.44\textwidth}
+      \begin{itemize}
+        \item Concordance rises with depth
+        \item Method C reaches 99\% at 20×
+        \item Lines differ by color, marker, and dash
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \includegraphics[width=\textwidth]{../figures/demo-concordance.png}\par
+      \credit{Simulated data, for layout only.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Table}
+  \centering
+  \begin{tabular}{@{}lrrr@{}}
+    \toprule
+    Caller & Precision (\%) & Recall (\%) & F1 (\%) \\
+    \midrule
+    Method A & 97.1 & 92.4 & 94.7 \\
+    Method B & 98.3 & 95.0 & 96.6 \\
+    Method C & 99.0 & 97.8 & 98.4 \\
+    \bottomrule
+  \end{tabular}
+
+  \medskip
+  {\small\color{oiMuted} Simulated values for layout only.}
+\end{frame}
+
+\section{Equations and code}
+
+\begin{frame}{Equations}
+  Hardy-Weinberg genotype frequencies for allele frequencies $p + q = 1$:
+  \[
+    p^2 + 2pq + q^2 = 1
+  \]
+  Posterior probability of genotype $G$ given reads $D$:
+  \begin{align*}
+    P(G \mid D) &= \frac{P(D \mid G)\,P(G)}{\sum_{g} P(D \mid g)\,P(g)} \\
+    F_1 &= \frac{2\,\mathrm{TP}}{2\,\mathrm{TP} + \mathrm{FP} + \mathrm{FN}}
+  \end{align*}
+\end{frame}
+
+\begin{frame}[fragile]{Code}
+\begin{codebox}
+\begin{lstlisting}[language=Python]
+import pysam
+
+def count_pass(path: str, min_qual: float = 30.0) -> int:
+    # Count PASS records with QUAL >= min_qual
+    with pysam.VariantFile(path) as vcf:
+        return sum(1 for rec in vcf if rec.qual >= min_qual)
+\end{lstlisting}
+\end{codebox}
+\begin{codebox}
+\begin{lstlisting}[language=bash]
+# Keep PASS variants and index the result
+bcftools view -f PASS -Oz -o pass.vcf.gz calls.vcf.gz
+tabix -p vcf pass.vcf.gz
+\end{lstlisting}
+\end{codebox}
+\end{frame}
+
+\begin{frame}{Palette}
+  \centering
+  \begin{tikzpicture}
+    \oiswatch{oiOrange}{Orange}{E69F00}{0}{0}
+    \oiswatch{oiSky}{Sky blue}{56B4E9}{1}{0}
+    \oiswatch{oiGreen}{Bluish green}{009E73}{2}{0}
+    \oiswatch{oiYellow}{Yellow}{F0E442}{3}{0}
+    \oiswatch{oiBlue}{Blue}{0072B2}{0}{1}
+    \oiswatch{oiVermillion}{Vermillion}{D55E00}{1}{1}
+    \oiswatch{oiPurple}{Reddish purple}{CC79A7}{2}{1}
+    \oiswatch{oiBlack}{Black}{000000}{3}{1}
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}[standout]
+  Thank you
+\end{frame}
+
+\end{document}

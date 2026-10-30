@@ -1,0 +1,793 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Jen-Hsiang Ou, Ph.D.</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reveal.css">
+  <style>
+/*
+ * mark-academic-slide theme for reveal.js.
+ * Companion of the theme in ../latex/template.tex: same geometry, colors, and
+ * type scale.
+ *
+ * Design grid: 1280 x 720 px = 160 x 90 mm, so 1 TeX pt = 2.81 px. Font sizes
+ * are the Beamer sizes of a 10 pt deck. Fonts load from Google Fonts; offline,
+ * the browser's default sans-serif and monospace fonts are used and line
+ * breaks may shift slightly.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans+Mono:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap');
+
+:root {
+  /* Okabe-Ito (Okabe & Ito, 2008) */
+  --oi-orange: #e69f00;
+  --oi-sky: #56b4e9;
+  --oi-green: #009e73;
+  --oi-yellow: #f0e442;
+  --oi-blue: #0072b2;
+  --oi-vermillion: #d55e00;
+  --oi-purple: #cc79a7;
+  --oi-black: #000000;
+  /* Grays */
+  --ink: #1f2328;
+  --paper: #ffffff;
+  --muted: #4d5258;
+  --rule: #d9d9d9;
+  --code-bg: #f2f2f2;
+  --block-title-bg: #e8e8e8;
+  --block-body-bg: #f5f5f5;
+
+  --font-sans: 'Noto Sans', 'Noto Sans TC', sans-serif;
+  --font-mono: 'Noto Sans Mono', 'Noto Sans TC', monospace;
+  /* Type scale in pt: 10 normal, 9 small, 8 foot, 7 script, 12 heading, 14.4 display. */
+  --fs: 28.1px;
+  --fs-small: 25.3px;
+  --fs-foot: 22.5px;
+  --fs-script: 19.7px;
+  --fs-heading: 33.7px;
+  --fs-display: 40.5px;
+  --lh: 1.38;
+  --lh-small: 1.406;
+  --margin-x: 56px; /* 7 mm */
+  --bar-h: 80px; /* frame title */
+  --line: 3.4px; /* accent lines, 1.2 pt */
+}
+
+/* ---- Base ---- */
+html,
+body {
+  background: var(--paper);
+}
+.reveal {
+  font: 400 var(--fs) / var(--lh) var(--font-sans);
+  color: var(--ink);
+  font-variant-numeric: lining-nums proportional-nums;
+}
+.reveal .slides {
+  text-align: left;
+}
+.reveal .slides > section {
+  width: 1280px;
+  height: 720px;
+  padding: 0;
+  box-sizing: border-box;
+  background: var(--paper);
+  text-align: left;
+}
+.reveal .slides > section.present {
+  display: flex !important;
+  flex-direction: column;
+}
+.reveal p {
+  margin: 0;
+}
+.reveal strong,
+.reveal b {
+  font-weight: 700;
+}
+.reveal em {
+  font-style: italic;
+}
+.reveal a {
+  color: var(--oi-blue);
+  text-decoration: none;
+}
+.reveal .alert {
+  color: var(--oi-vermillion);
+}
+.reveal .muted {
+  color: var(--muted);
+}
+.reveal sub,
+.reveal sup {
+  font-size: 0.7em;
+  line-height: 0;
+}
+.reveal .controls,
+.reveal .progress,
+.reveal .slide-number {
+  display: none !important;
+} /* reveal chrome */
+
+/* Headings share one reset */
+.reveal .frametitle,
+.reveal .titlepage h1,
+.reveal .sectionpage h2 {
+  margin: 0;
+  font-weight: 700;
+  color: var(--ink);
+  text-transform: none;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+/* ---- Frame: title with progress line, centered body, footer ---- */
+.reveal .frametitle {
+  flex: none;
+  position: relative;
+  height: var(--bar-h);
+  padding: 0 27px;
+  font-size: var(--fs-heading);
+  line-height: var(--bar-h);
+  white-space: nowrap;
+}
+.reveal .frametitle::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(-1 * var(--line));
+  height: var(--line);
+}
+.reveal .frametitle::after,
+.reveal .sectionpage .bar {
+  /* progress: blue up to --p (set by the JS), gray after */
+  background: linear-gradient(
+    to right,
+    var(--oi-blue) calc(var(--p, 0) * 100%),
+    var(--rule) 0
+  );
+}
+.reveal .frame-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-top: 3px;
+  padding: 0 var(--margin-x) 67px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.reveal .footer {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  bottom: 50px;
+  height: 0;
+  font-size: var(--fs-script);
+  line-height: 1;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+/* ---- Title page ---- */
+.reveal section.titlepage {
+  justify-content: center;
+  padding: 0 var(--margin-x) 16px;
+}
+.reveal .titlepage h1 {
+  font-size: var(--fs-display);
+  line-height: 1.44;
+}
+.reveal .titlepage .subtitle {
+  margin-top: 15px;
+  font-size: var(--fs-heading);
+}
+.reveal .titlepage hr {
+  margin: 39px 0 0;
+  border: 0;
+  border-top: var(--line) solid var(--oi-blue);
+}
+.reveal .titlepage .author,
+.reveal .titlepage .date {
+  margin-top: 6px;
+  font-size: var(--fs-small);
+  line-height: var(--lh-small);
+}
+.reveal .titlepage .author {
+  margin-top: 60px;
+}
+.reveal .titlepage .institute {
+  margin-top: 19px;
+  font-size: var(--fs-script);
+  line-height: 1.43;
+}
+
+/* ---- Section page and standout page ---- */
+.reveal section.sectionpage {
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 47px;
+}
+.reveal .sectionpage .inner {
+  width: 618px;
+}
+.reveal .sectionpage h2 {
+  font-size: var(--fs-display);
+  line-height: 1.39;
+}
+.reveal .sectionpage .bar {
+  margin-top: 19px;
+  height: var(--line);
+}
+.reveal section.standout {
+  justify-content: center;
+  align-items: center;
+}
+.reveal .standout .frame-body {
+  justify-content: center;
+  align-items: center;
+}
+.reveal .standout-text {
+  font-size: var(--fs-display);
+  font-weight: 700;
+  text-align: center;
+}
+.reveal .standout .footer,
+.reveal .titlepage .footer,
+.reveal .sectionpage .footer {
+  display: none;
+}
+
+/* ---- Lists (Beamer itemize: 10 pt, nested 9 pt) ---- */
+.reveal ul,
+.reveal ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: block;
+}
+.reveal li {
+  position: relative;
+  margin: 5px 0 0;
+  padding-left: 55px;
+}
+.reveal li::before {
+  position: absolute;
+  left: 33px;
+}
+.reveal ul > li::before {
+  content: '\2022';
+}
+.reveal ol {
+  counter-reset: item;
+}
+.reveal ol > li {
+  counter-increment: item;
+}
+.reveal ol > li::before {
+  content: counter(item) '.';
+  left: 32px;
+}
+.reveal li > ul,
+.reveal li > ol {
+  margin-top: 4px;
+  font-size: var(--fs-small);
+  line-height: var(--lh-small);
+}
+.reveal li li {
+  margin-top: 0;
+}
+.reveal li > ul > li::before {
+  left: 35px;
+}
+.reveal li > ol > li::before {
+  left: 26px;
+}
+
+/* Table of contents: plain items, spaced by --toc-gap */
+.reveal ul.toc {
+  margin-top: -28px;
+}
+.reveal ul.toc > li {
+  margin-top: 0;
+  padding-left: 0;
+}
+.reveal ul.toc > li + li {
+  margin-top: var(--toc-gap, 77px);
+}
+.reveal ul.toc > li::before {
+  content: none;
+}
+
+/* ---- Blocks: gray title and body under a colored top rule ---- */
+.reveal .block {
+  margin-top: 66px;
+  border-top: var(--line) solid var(--oi-blue);
+}
+.reveal .block.alert-block {
+  border-top-color: var(--oi-vermillion);
+}
+.reveal .block.example-block {
+  border-top-color: var(--oi-green);
+}
+.reveal .block:last-child {
+  margin-bottom: 57px;
+}
+.reveal .block-title,
+.reveal .block-body {
+  line-height: 26px;
+}
+.reveal .block-title {
+  padding: 8px;
+  background: var(--block-title-bg);
+  font-weight: 700;
+}
+.reveal .block-body {
+  /* --lines: body height in text lines, set per block when it wraps */
+  padding: 6px 8px 5px;
+  height: calc(var(--lines, 1) * 26px);
+  box-sizing: content-box;
+  background: var(--block-body-bg);
+}
+
+/* ---- Columns, figures, credits ---- */
+.reveal .columns {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.reveal .columns > .col-46 {
+  width: 46%;
+}
+.reveal .columns > .col-52 {
+  width: 52%;
+}
+.reveal .columns ul {
+  margin-top: -10px;
+}
+.reveal .columns li {
+  margin-top: 7px;
+}
+.reveal img {
+  border: 0;
+  margin: 0;
+  box-shadow: none;
+  background: none;
+  max-width: 100%;
+  display: block;
+}
+.reveal .credit {
+  margin-top: 19px;
+  font-size: var(--fs-script);
+  color: var(--muted);
+}
+
+/* ---- Tables: booktabs-style rules ---- */
+.reveal table {
+  border-collapse: collapse;
+  margin: 0 auto;
+  font-size: inherit;
+}
+.reveal th,
+.reveal td {
+  padding: 0 17px;
+  text-align: left;
+  border: 0;
+  font-weight: 400;
+}
+.reveal th:first-child,
+.reveal td:first-child {
+  padding-left: 0;
+}
+.reveal th:last-child,
+.reveal td:last-child {
+  padding-right: 0;
+}
+.reveal th {
+  padding-top: 9px;
+  padding-bottom: 8px;
+}
+.reveal tbody tr:first-child td {
+  padding-top: 9px;
+}
+.reveal tbody tr:last-child td {
+  padding-bottom: 7px;
+}
+.reveal table .num {
+  text-align: right;
+}
+.reveal thead tr:first-child {
+  border-top: 2px solid var(--ink);
+}
+.reveal thead tr:last-child {
+  border-bottom: 1px solid var(--ink);
+}
+.reveal tbody tr:last-child {
+  border-bottom: 2px solid var(--ink);
+}
+.reveal .caption {
+  margin-top: 27px;
+  font-size: var(--fs-small);
+  line-height: var(--lh-small);
+  text-align: center;
+}
+
+.reveal code {
+  font-family: var(--font-mono);
+}
+
+/* ---- Math (KaTeX, Computer Modern like the PDF) ---- */
+.reveal .katex {
+  font-size: 1em;
+}
+.reveal .katex-display {
+  margin: 33px 0 27px;
+}
+.reveal .align .katex-display {
+  margin-top: 25px;
+}
+
+/* ---- Code: boxed; token colors match the listings style in template.tex ---- */
+.reveal .codebox {
+  margin-top: 20px;
+  background: var(--code-bg);
+}
+.reveal pre {
+  width: 100%;
+  margin: 0;
+  box-shadow: none;
+  font: 21.8px / 30.7px var(--font-mono);
+}
+.reveal pre code {
+  display: block;
+  padding: 8px 20px;
+  max-height: none;
+  overflow: hidden;
+  font: inherit;
+  color: var(--oi-black);
+  background: transparent;
+  white-space: pre;
+  tab-size: 4;
+}
+.hljs {
+  background: transparent;
+  color: var(--oi-black);
+}
+.hljs-keyword,
+.hljs-built_in,
+.hljs-literal,
+.hljs-type {
+  color: var(--oi-blue);
+  font-weight: 700;
+}
+.hljs-string,
+.hljs-regexp {
+  color: var(--oi-vermillion);
+}
+.hljs-comment {
+  color: var(--muted);
+  font-style: italic;
+}
+.hljs-number,
+.hljs-title,
+.hljs-params,
+.hljs-variable,
+.hljs-attr {
+  color: var(--oi-black);
+  font-weight: 400;
+}
+
+/* ---- Palette swatches: 4 columns of 3.3 x 1.4 cm chips ---- */
+.reveal .swatches {
+  width: 1116px;
+  margin: 54px auto 0;
+  display: grid;
+  grid-template-columns: repeat(4, 264px);
+  grid-auto-rows: 232px;
+  column-gap: 20px;
+}
+.reveal .swatch .chip {
+  height: 112px;
+}
+.reveal .chip-orange {
+  background: var(--oi-orange);
+}
+.reveal .chip-sky {
+  background: var(--oi-sky);
+}
+.reveal .chip-green {
+  background: var(--oi-green);
+}
+.reveal .chip-yellow {
+  background: var(--oi-yellow);
+}
+.reveal .chip-blue {
+  background: var(--oi-blue);
+}
+.reveal .chip-vermillion {
+  background: var(--oi-vermillion);
+}
+.reveal .chip-purple {
+  background: var(--oi-purple);
+}
+.reveal .chip-black {
+  background: var(--oi-black);
+}
+.reveal .swatch .name {
+  margin-top: -2px;
+  font-size: var(--fs-small);
+  line-height: 1.2;
+}
+.reveal .swatch .hex {
+  margin-top: 8px;
+  font: var(--fs-foot) / 1.2 var(--font-mono);
+}
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <!-- Optional left footer, empty by default: add data-footer="Ou • Slide template" to the next tag
+       (same as \footertext{...} in the LaTeX template) -->
+  <div class="slides">
+
+    <!-- Title page: \maketitle -->
+    <section class="titlepage" data-nonumber>
+      <h1>mark-academic-slide</h1>
+      <p class="subtitle">One template for XeLaTeX and reveal.js</p>
+      <hr>
+      <p class="author">Jen-Hsiang Ou, Ph.D.</p>
+      <p class="date">2026-10-29</p>
+      <p class="institute">Department of Medical Genetics, National Taiwan University Hospital</p>
+    </section>
+
+    <!-- \tableofcontents -->
+    <section>
+      <h2 class="frametitle">Outline</h2>
+      <div class="frame-body">
+        <ul class="toc">
+          <li>Text and blocks</li>
+          <li>Figures and tables</li>
+          <li>Equations and code</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- \section{...}: section page -->
+    <section class="sectionpage" data-nonumber>
+      <div class="inner"><h2>Text and blocks</h2><div class="bar"></div></div>
+    </section>
+
+    <section>
+      <h2 class="frametitle">Lists and emphasis</h2>
+      <div class="frame-body">
+        <ul>
+          <li>Plain text is Noto Sans, with <span class="alert">vermillion</span> for alerts and <em>italics</em> for terms</li>
+          <li>繁體中文可直接輸入，technical terms 保留 English</li>
+          <li>Nested lists
+            <ul>
+              <li>Second level keeps the same line spacing</li>
+              <li>Third level is rarely needed</li>
+            </ul>
+          </li>
+          <li>Numbered steps
+            <ol>
+              <li>Align reads to the reference</li>
+              <li>Call variants and normalize them</li>
+              <li>Annotate and filter</li>
+            </ol>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="frametitle">Blocks</h2>
+      <div class="frame-body">
+        <div class="block">
+          <div class="block-title">Definition</div>
+          <div class="block-body">The Phred score $Q$ of a base call is $Q = -10\log_{10} P_{\mathrm{error}}$.</div>
+        </div>
+        <div class="block alert-block">
+          <div class="block-title">Warning</div>
+          <div class="block-body">Check the genome build before you merge coordinates from two tables.</div>
+        </div>
+        <div class="block example-block">
+          <div class="block-title">Example</div>
+          <div class="block-body">$Q = 30$ corresponds to one expected error in 1,000 base calls.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sectionpage" data-nonumber>
+      <div class="inner"><h2>Figures and tables</h2><div class="bar"></div></div>
+    </section>
+
+    <section>
+      <h2 class="frametitle">Figure with text</h2>
+      <div class="frame-body">
+        <div class="columns">
+          <div class="col-46">
+            <ul>
+              <li>Concordance rises with depth</li>
+              <li>Method C reaches 99% at 20×</li>
+              <li>Lines differ by color, marker, and dash</li>
+            </ul>
+          </div>
+          <div class="col-52">
+            <img src="../figures/demo-concordance.png" alt="Genotype concordance versus mean depth for three methods (simulated data)">
+            <p class="credit">Simulated data, for layout only.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="frametitle">Table</h2>
+      <div class="frame-body">
+        <table>
+          <thead>
+            <tr><th>Caller</th><th class="num">Precision (%)</th><th class="num">Recall (%)</th><th class="num">F1 (%)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Method A</td><td class="num">97.1</td><td class="num">92.4</td><td class="num">94.7</td></tr>
+            <tr><td>Method B</td><td class="num">98.3</td><td class="num">95.0</td><td class="num">96.6</td></tr>
+            <tr><td>Method C</td><td class="num">99.0</td><td class="num">97.8</td><td class="num">98.4</td></tr>
+          </tbody>
+        </table>
+        <p class="caption muted">Simulated values for layout only.</p>
+      </div>
+    </section>
+
+    <section class="sectionpage" data-nonumber>
+      <div class="inner"><h2>Equations and code</h2><div class="bar"></div></div>
+    </section>
+
+    <section>
+      <h2 class="frametitle">Equations</h2>
+      <div class="frame-body">
+        <p>Hardy-Weinberg genotype frequencies for allele frequencies $p + q = 1$:</p>
+        $$p^2 + 2pq + q^2 = 1$$
+        <p>Posterior probability of genotype $G$ given reads $D$:</p>
+        <div class="align">$$\begin{aligned}
+          P(G \mid D) &= \frac{P(D \mid G)\,P(G)}{\sum_{g} P(D \mid g)\,P(g)} \\
+          F_1 &= \frac{2\,\mathrm{TP}}{2\,\mathrm{TP} + \mathrm{FP} + \mathrm{FN}}
+        \end{aligned}$$</div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="frametitle">Code</h2>
+      <div class="frame-body">
+        <div class="codebox"><pre><code class="language-python" data-trim data-noescape>import pysam
+
+def count_pass(path: str, min_qual: float = 30.0) -> int:
+    # Count PASS records with QUAL >= min_qual
+    with pysam.VariantFile(path) as vcf:
+        return sum(1 for rec in vcf if rec.qual >= min_qual)</code></pre></div>
+        <div class="codebox"><pre><code class="language-bash" data-trim data-noescape># Keep PASS variants and index the result
+bcftools view -f PASS -Oz -o pass.vcf.gz calls.vcf.gz
+tabix -p vcf pass.vcf.gz</code></pre></div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="frametitle">Palette</h2>
+      <div class="frame-body">
+        <div class="swatches">
+          <div class="swatch"><div class="chip chip-orange"></div><div class="name">Orange</div><div class="hex">#E69F00</div></div>
+          <div class="swatch"><div class="chip chip-sky"></div><div class="name">Sky blue</div><div class="hex">#56B4E9</div></div>
+          <div class="swatch"><div class="chip chip-green"></div><div class="name">Bluish green</div><div class="hex">#009E73</div></div>
+          <div class="swatch"><div class="chip chip-yellow"></div><div class="name">Yellow</div><div class="hex">#F0E442</div></div>
+          <div class="swatch"><div class="chip chip-blue"></div><div class="name">Blue</div><div class="hex">#0072B2</div></div>
+          <div class="swatch"><div class="chip chip-vermillion"></div><div class="name">Vermillion</div><div class="hex">#D55E00</div></div>
+          <div class="swatch"><div class="chip chip-purple"></div><div class="name">Reddish purple</div><div class="hex">#CC79A7</div></div>
+          <div class="swatch"><div class="chip chip-black"></div><div class="name">Black</div><div class="hex">#000000</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="standout" data-nonumber>
+      <div class="frame-body"><div class="standout-text">Thank you</div></div>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/plugin/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/plugin/math.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/plugin/notes.js"></script>
+<script>
+/**
+ * @fileoverview Starts reveal.js with the mark-academic-slide settings and adds
+ * the frame counter, the progress line, and the footer.
+ *
+ * As in Beamer, slides marked `data-nonumber` (title, section, standout) are
+ * not counted. The browser tab shows the presenter's name, taken from the
+ * `.author` line of the title page. Load reveal.js and its highlight, math,
+ * and notes plugins first, then call `markAcademicSlide()`.
+ */
+
+/**
+ * Initializes reveal.js on the 1280 x 720 design grid and decorates the slides.
+ * Reveal scales the grid to the window; the CSS never uses viewport units.
+ *
+ * @return {!Promise<void>} Resolves when the slides are decorated.
+ */
+function markAcademicSlide() {
+  return Reveal.initialize({
+    width: 1280,
+    height: 720,
+    margin: 0,
+    minScale: 0.1,
+    maxScale: 4,
+    center: false,
+    controls: false,
+    progress: false,
+    slideNumber: false,
+    hash: true,
+    transition: 'none',
+    backgroundTransition: 'none',
+    pdfSeparateFragments: false,
+    katex: {version: '0.19.1', trust: false},
+    plugins: [RevealHighlight, RevealMath.KaTeX, RevealNotes],
+  }).then(decorateSlides);
+}
+
+/**
+ * Sets `--p` (progress, 0 to 1) on every slide and appends a footer with the
+ * left text (`data-footer` on `.slides`) and the frame number "n/N" to each
+ * counted slide. Also sets the tab title to the presenter's name.
+ */
+function decorateSlides() {
+  const root = document.querySelector('.reveal .slides');
+  const footerText = root.getAttribute('data-footer') || '';
+  const slides = Array.from(root.querySelectorAll(':scope > section'));
+  const total = slides.filter(isCounted).length;
+  const author = root.querySelector('.author');
+  if (author) {
+    document.title = author.textContent.trim();
+  }
+  let count = 0;
+  for (const slide of slides) {
+    if (isCounted(slide)) {
+      count += 1;
+    }
+    slide.style.setProperty('--p', count / total);
+    if (isCounted(slide)) {
+      slide.appendChild(makeFooter(footerText, `${count}/${total}`));
+    }
+  }
+}
+
+/**
+ * @param {!Element} slide
+ * @return {boolean} Whether the slide counts in the frame numbering.
+ */
+function isCounted(slide) {
+  return !slide.hasAttribute('data-nonumber');
+}
+
+/**
+ * @param {string} left Footer text on the left.
+ * @param {string} right Frame number on the right.
+ * @return {!Element} The footer element.
+ */
+function makeFooter(left, right) {
+  const footer = document.createElement('div');
+  footer.className = 'footer';
+  for (const text of [left, right]) {
+    const span = document.createElement('span');
+    span.textContent = text;
+    footer.appendChild(span);
+  }
+  return footer;
+}
+
+markAcademicSlide();
+</script>
+</body>
+</html>
